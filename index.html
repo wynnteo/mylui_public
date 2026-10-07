@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>MyLui – Net Worth Tracker for SG & MY</title>
+<meta name="description" content="Track your net worth across Singapore and Malaysia. Multi-currency, investments, property, CPF, EPF — all in one place. No account needed.">
+<meta property="og:title" content="MyLui – Net Worth Tracker for SG & MY">
+<meta property="og:description" content="Track your wealth across two countries. SGD, MYR, investments, property, CPF, EPF. Beautiful charts. Private by default.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #0a0b14;
+    --bg2:     #0f1020;
+    --surface: rgba(255,255,255,0.05);
+    --border:  rgba(255,255,255,0.10);
+    --purple:  #7c6af7;
+    --purple2: #9f8fff;
+    --teal:    #38c9b8;
+    --text:    #e8eaf6;
+    --muted:   #8b8fa8;
+    --success: #34d399;
+    --danger:  #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  a { color: var(--purple2); text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+
+  /* ── Layout ── */
+  .wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ── Header ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,11,20,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  header .wrap {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem; padding-bottom: 1rem;
+  }
+  .brand {
+    display: flex; align-items: center; gap: .65rem;
+    font-weight: 700; font-size: 1.1rem;
+    color: var(--text); text-decoration: none;
+  }
+  .brand-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: linear-gradient(135deg, #38c9b8 0%, #7c6af7 100%);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  nav { display: flex; gap: 1.5rem; align-items: center; }
+  nav a { color: var(--muted); text-decoration: none; font-size: .9rem; transition: color .15s; }
+  nav a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--purple); color: #fff !important;
+    padding: .45rem 1.1rem; border-radius: 8px;
+    font-weight: 600; font-size: .875rem;
+  }
+  .nav-cta:hover { background: var(--purple2) !important; }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 5rem 0 4rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(124,106,247,.12);
+    border: 1px solid rgba(124,106,247,.28);
+    border-radius: 9999px;
+    padding: .28rem .9rem;
+    font-size: .78rem; font-weight: 600;
+    color: var(--purple2); margin-bottom: 1.25rem;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+  h1 {
+    font-size: clamp(2rem, 4.5vw, 3.1rem);
+    font-weight: 700; line-height: 1.15;
+    letter-spacing: -.03em; margin-bottom: 1.25rem;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--teal), var(--purple2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-lede { color: var(--muted); font-size: 1.05rem; max-width: 34em; margin-bottom: 2rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: linear-gradient(135deg, var(--purple), var(--teal));
+    color: #fff; font-weight: 600; text-decoration: none;
+    padding: .85rem 1.75rem; border-radius: 12px; font-size: .95rem;
+    transition: opacity .15s;
+  }
+  .btn-primary:hover { opacity: .88; color: #fff; }
+  .btn-ghost { color: var(--muted); text-decoration: none; font-size: .9rem; }
+  .btn-ghost:hover { color: var(--text); }
+
+  /* ── Mock card ── */
+  .mock-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 1.75rem;
+    backdrop-filter: blur(20px); position: relative; overflow: hidden;
+  }
+  .mock-card::before {
+    content: ''; position: absolute; top: -70px; right: -70px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(124,106,247,.2), transparent 70%);
+  }
+  .mock-label { font-size: .72rem; color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .5rem; }
+  .mock-networth { font-size: 2.2rem; font-weight: 700; letter-spacing: -.03em; margin-bottom: .2rem; }
+  .mock-change { font-size: .85rem; color: var(--success); font-weight: 600; margin-bottom: 1.4rem; }
+  .mock-currency-tabs { display: flex; gap: .4rem; margin-bottom: 1.4rem; }
+  .mock-tab { padding: .25rem .7rem; border-radius: 9999px; font-size: .75rem; font-weight: 600; background: rgba(255,255,255,.07); color: var(--muted); }
+  .mock-tab.active { background: var(--purple); color: #fff; }
+  .mock-rows { display: flex; flex-direction: column; gap: .6rem; }
+  .mock-row { display: flex; justify-content: space-between; align-items: center; }
+  .mock-row-left { display: flex; align-items: center; gap: .6rem; }
+  .mock-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .mock-row-name { font-size: .85rem; color: var(--muted); }
+  .mock-row-val { font-size: .85rem; font-weight: 600; }
+  .mock-divider { height: 1px; background: var(--border); margin: .6rem 0; }
+  .mock-spark { margin-top: 1.25rem; }
+  .mock-spark-label { font-size: .72rem; color: var(--muted); margin-bottom: .4rem; }
+
+  /* ── Sections ── */
+  section { padding: 5rem 0; border-top: 1px solid var(--border); }
+  .section-label { font-size: .72rem; font-weight: 600; color: var(--teal); letter-spacing: .12em; text-transform: uppercase; margin-bottom: .75rem; }
+  h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 700; letter-spacing: -.02em; margin-bottom: .75rem; }
+  .section-sub { color: var(--muted); max-width: 38em; margin-bottom: 3rem; font-size: 1rem; }
+
+  /* ── Feature grid ── */
+  .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+  .feat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+  .feat-card.wide { grid-column: span 2; }
+  .feat-icon {
+    width: 38px; height: 38px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem; flex-shrink: 0;
+  }
+  .feat-card h3 { font-size: .95rem; font-weight: 700; margin-bottom: .4rem; }
+  .feat-card p { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── Analytics ── */
+  .analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2.5rem; }
+  .analytics-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem 1.5rem; }
+  .analytics-card h3 { font-size: .8rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 1rem; }
+  .heatmap { display: grid; grid-template-columns: repeat(12,1fr); gap: 4px; }
+  .hm-cell { aspect-ratio: 1; border-radius: 3px; background: rgba(255,255,255,.05); }
+  .hm-cell.l1 { background: rgba(124,106,247,.2); }
+  .hm-cell.l2 { background: rgba(124,106,247,.45); }
+  .hm-cell.l3 { background: rgba(124,106,247,.7); }
+  .hm-cell.l4 { background: rgba(124,106,247,.95); }
+  .hm-cell.neg { background: rgba(248,113,113,.4); }
+  .vel-bars { display: flex; flex-direction: column; gap: .6rem; }
+  .vel-row { display: flex; align-items: center; gap: .75rem; }
+  .vel-month { font-size: .72rem; color: var(--muted); width: 28px; flex-shrink: 0; }
+  .vel-track { flex: 1; height: 7px; background: rgba(255,255,255,.06); border-radius: 4px; overflow: hidden; }
+  .vel-fill { height: 100%; border-radius: 4px; }
+  .vel-val { font-size: .72rem; font-weight: 600; width: 48px; text-align: right; flex-shrink: 0; }
+  .goal-row { display: flex; flex-direction: column; gap: .4rem; margin-bottom: .75rem; }
+  .goal-label { display: flex; justify-content: space-between; font-size: .82rem; }
+  .goal-label span:first-child { color: var(--muted); }
+  .goal-label span:last-child { font-weight: 600; }
+  .goal-track { height: 5px; background: rgba(255,255,255,.06); border-radius: 3px; overflow: hidden; }
+  .goal-fill { height: 100%; border-radius: 3px; }
+
+  /* ── Screens ── */
+  .shots { display: flex; gap: 1.25rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+  .shot { margin: 0; flex: 0 0 min(55vw, 195px); scroll-snap-align: start; }
+  .frame {
+    position: relative; aspect-ratio: 9/19.5;
+    border: 1px solid var(--border); border-radius: 22px;
+    overflow: hidden; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: .78rem; text-align: center; padding: 1rem;
+  }
+  .frame::before { content: attr(data-file); }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .shot figcaption { margin-top: .55rem; font-size: .82rem; color: var(--muted); text-align: center; }
+
+  /* ── Privacy box ── */
+  .privacy-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; max-width: 44em; }
+  .privacy-box p { color: var(--muted); margin-bottom: .75rem; font-size: .925rem; }
+  .privacy-box p:last-child { margin-bottom: 0; }
+
+  /* ── CTA banner ── */
+  .cta-banner {
+    background: linear-gradient(135deg, rgba(124,106,247,.12), rgba(56,201,184,.08));
+    border: 1px solid rgba(124,106,247,.22);
+    border-radius: 20px; padding: 3.5rem 2.5rem;
+    text-align: center; margin: 5rem 0 0;
+  }
+  .cta-banner h2 { margin-bottom: .75rem; }
+  .cta-banner p { color: var(--muted); max-width: 32em; margin: 0 auto 2rem; }
+
+  /* ── Footer ── */
+  footer { border-top: 1px solid var(--border); padding: 2rem 0 3rem; color: var(--muted); font-size: .875rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between; align-items: center; }
+  footer .links { display: flex; gap: 1.25rem; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* ── Responsive ── */
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; gap: 3rem; padding: 3rem 0; }
+    .feat-grid { grid-template-columns: 1fr; }
+    .feat-card.wide { grid-column: span 1; }
+    .analytics-grid { grid-template-columns: 1fr; }
+    nav .nav-cta { display: none; }
+    section { padding: 3.5rem 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
+      </div>
+      MyLui
+    </a>
+    <nav aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#analytics">Analytics</a>
+      <a href="#screens">Screens</a>
+      <a href="policy.html">Privacy</a>
+      <a class="nav-cta" href="https://play.google.com/store/apps/details?id=com.cloudfullstack.mylui">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Singapore &amp; Malaysia
+        </div>
+        <h1>Your wealth,<br><em>both sides</em><br>of the causeway</h1>
+        <p class="hero-lede">MyLui tracks your net worth across SGD and MYR accounts — bank, CPF, EPF, investments, property — in one clear view. No account needed, nothing leaves your phone.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="https://play.google.com/store/apps/details?id=com.cloudfullstack.mylui">Get it on Google Play</a>
+          <a class="btn-ghost" href="#features">See what it does</a>
+        </div>
+      </div>
+
+      <div aria-hidden="true">
+        <div class="mock-card">
+          <div class="mock-label">Total Net Worth</div>
+          <div class="mock-networth">S$182,450</div>
+          <div class="mock-change">+S$3,210 this month</div>
+          <div class="mock-currency-tabs">
+            <div class="mock-tab active">SGD</div>
+            <div class="mock-tab">MYR</div>
+            <div class="mock-tab">USD</div>
+          </div>
+          <div class="mock-rows">
+            <div class="mock-row">
+              <div class="mock-row-left">
+                <div class="mock-dot" style="background:#38c9b8"></div>
+                <span class="mock-row-name">DBS Multiplier</span>
+              </div>
+              <span class="mock-row-val">S$28,500</span>
+            </div>
+            <div class="mock-row">
+              <div class="mock-row-left">
+                <div class="mock-dot" style="background:#7c6af7"></div>
+                <span class="mock-row-name">CPF Special Account</span>
+              </div>
+              <span class="mock-row-val">S$68,000</span>
+            </div>
+            <div class="mock-row">
+              <div class="mock-row-left">
+                <div class="mock-dot" style="background:#f59e0b"></div>
+                <span class="mock-row-name">EPF (KWSP)</span>
+              </div>
+              <span class="mock-row-val">RM95,000</span>
+            </div>
+            <div class="mock-row">
+              <div class="mock-row-left">
+                <div class="mock-dot" style="background:#34d399"></div>
+                <span class="mock-row-name">Punggol HDB</span>
+              </div>
+              <span class="mock-row-val">S$580,000</span>
+            </div>
+            <div class="mock-divider"></div>
+            <div class="mock-row">
+              <div class="mock-row-left">
+                <div class="mock-dot" style="background:#f87171"></div>
+                <span class="mock-row-name">Car Loan</span>
+              </div>
+              <span class="mock-row-val" style="color:var(--danger)">-S$18,000</span>
+            </div>
+          </div>
+          <div class="mock-spark">
+            <div class="mock-spark-label">6-month trend</div>
+            <svg viewBox="0 0 240 44" width="100%" height="44" fill="none">
+              <defs>
+                <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#7c6af7" stop-opacity=".35"/>
+                  <stop offset="100%" stop-color="#7c6af7" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,36 L40,30 L80,26 L120,20 L160,14 L200,8 L240,3" stroke="#7c6af7" stroke-width="2" stroke-linecap="round"/>
+              <path d="M0,36 L40,30 L80,26 L120,20 L160,14 L200,8 L240,3 L240,44 L0,44Z" fill="url(#sg)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-label">Features</div>
+      <h2>Built for the SG–MY commuter</h2>
+      <p class="section-sub">Most finance apps assume you live in one country. MyLui doesn't.</p>
+
+      <div class="feat-grid">
+        <div class="feat-card wide">
+          <div class="feat-icon" style="background:rgba(56,201,184,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#38c9b8" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+          <h3>Multi-currency net worth in one view</h3>
+          <p>SGD, MYR, USD, CNY, EUR, GBP — all converted at live exchange rates and totalled into a single net worth figure. Tap any currency to see everything in that denomination.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(124,106,247,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9f8fff" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+            </svg>
+          </div>
+          <h3>CPF and EPF side by side</h3>
+          <p>Track your Singapore CPF and Malaysia EPF alongside your other accounts, all converted to your chosen display currency.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(245,158,11,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <h3>Property tracking</h3>
+          <p>Log purchase price, outstanding loan, and monthly rental. MyLui calculates your equity and rental yield automatically.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(52,211,153,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+            </svg>
+          </div>
+          <h3>SGX and Bursa investments</h3>
+          <p>Add stock holdings from SGX or Bursa Malaysia. Live prices from Yahoo Finance. P&amp;L and unrealised gains calculated per holding.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(124,106,247,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9f8fff" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <h3>Financial goal tags</h3>
+          <p>Tag accounts as Retirement, Emergency Fund, Education, or House. See how much you have allocated toward each goal at a glance.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(56,201,184,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#38c9b8" stroke-width="2" stroke-linecap="round">
+              <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/>
+            </svg>
+          </div>
+          <h3>Home screen widget</h3>
+          <p>Your current net worth on your home screen. Swipe to cycle through accounts without opening the app.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(248,113,113,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </div>
+          <h3>Private by default</h3>
+          <p>Everything stored on your device. No sign-up, no cloud sync. PIN or biometric lock included.</p>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon" style="background:rgba(245,158,11,.12)">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+            </svg>
+          </div>
+          <h3>English and Simplified Chinese</h3>
+          <p>Full localisation in both languages. Switch at any time in settings.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics -->
+  <section id="analytics">
+    <div class="wrap">
+      <div class="section-label">Analytics</div>
+      <h2>Understand your money, not just count it</h2>
+      <p class="section-sub">Update your balances once a month. MyLui handles the rest — trends, velocity, allocation, and year-over-year growth.</p>
+
+      <div class="analytics-grid">
+        <div class="analytics-card">
+          <h3>Net worth heatmap</h3>
+          <div class="heatmap" aria-hidden="true">
+            <div class="hm-cell"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div>
+            <div class="hm-cell l1"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div>
+            <div class="hm-cell neg"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div>
+            <div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div>
+          </div>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:.75rem">Best and worst months at a glance</p>
+        </div>
+
+        <div class="analytics-card">
+          <h3>Monthly velocity</h3>
+          <div class="vel-bars" aria-hidden="true">
+            <div class="vel-row">
+              <div class="vel-month">Mar</div>
+              <div class="vel-track"><div class="vel-fill" style="width:45%;background:var(--purple)"></div></div>
+              <div class="vel-val" style="color:var(--success)">+1.2k</div>
+            </div>
+            <div class="vel-row">
+              <div class="vel-month">Apr</div>
+              <div class="vel-track"><div class="vel-fill" style="width:20%;background:var(--danger)"></div></div>
+              <div class="vel-val" style="color:var(--danger)">-0.5k</div>
+            </div>
+            <div class="vel-row">
+              <div class="vel-month">May</div>
+              <div class="vel-track"><div class="vel-fill" style="width:65%;background:var(--purple)"></div></div>
+              <div class="vel-val" style="color:var(--success)">+2.1k</div>
+            </div>
+            <div class="vel-row">
+              <div class="vel-month">Jun</div>
+              <div class="vel-track"><div class="vel-fill" style="width:80%;background:var(--teal)"></div></div>
+              <div class="vel-val" style="color:var(--success)">+3.2k</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <h3>Assets vs liabilities</h3>
+          <div style="display:flex;gap:1.25rem;align-items:center;" aria-hidden="true">
+            <svg viewBox="0 0 80 80" width="72" height="72" style="flex-shrink:0">
+              <circle cx="40" cy="40" r="28" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="11"/>
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#7c6af7" stroke-width="11"
+                stroke-dasharray="152 24" stroke-dashoffset="22" stroke-linecap="round"/>
+              <circle cx="40" cy="40" r="28" fill="none" stroke="#f87171" stroke-width="11"
+                stroke-dasharray="24 152" stroke-dashoffset="-152" stroke-linecap="round"/>
+            </svg>
+            <div style="font-size:.82rem;display:flex;flex-direction:column;gap:.5rem">
+              <div style="display:flex;align-items:center;gap:.5rem">
+                <div style="width:7px;height:7px;border-radius:50%;background:var(--purple);flex-shrink:0"></div>
+                <span style="color:var(--muted)">Assets</span>
+                <span style="font-weight:700;margin-left:.5rem">86%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:.5rem">
+                <div style="width:7px;height:7px;border-radius:50%;background:var(--danger);flex-shrink:0"></div>
+                <span style="color:var(--muted)">Liabilities</span>
+                <span style="font-weight:700;margin-left:.5rem">14%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="analytics-card">
+          <h3>Goal breakdown</h3>
+          <div aria-hidden="true">
+            <div class="goal-row">
+              <div class="goal-label"><span>Retirement</span><span>S$163k</span></div>
+              <div class="goal-track"><div class="goal-fill" style="width:72%;background:var(--purple)"></div></div>
+            </div>
+            <div class="goal-row">
+              <div class="goal-label"><span>House</span><span>S$260k</span></div>
+              <div class="goal-track"><div class="goal-fill" style="width:55%;background:var(--teal)"></div></div>
+            </div>
+            <div class="goal-row">
+              <div class="goal-label"><span>Emergency fund</span><span>S$28k</span></div>
+              <div class="goal-track"><div class="goal-fill" style="width:30%;background:var(--success)"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screens -->
+  <section id="screens">
+    <div class="wrap">
+      <div class="section-label">Screens</div>
+      <h2>A few screens from the app</h2>
+      <p class="section-sub">Add your screenshots to the images/ folder and they will appear here automatically.</p>
+      <div class="shots">
+        <figure class="shot">
+          <div class="frame" data-file="images/home.png"><img src="images/home.png" alt="MyLui home screen" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <figcaption>Home</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame" data-file="images/analytics.png"><img src="images/analytics.png" alt="Analytics" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <figcaption>Analytics</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame" data-file="images/investments.png"><img src="images/investments.png" alt="Investments" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <figcaption>Investments</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame" data-file="images/accounts.png"><img src="images/accounts.png" alt="Accounts" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <figcaption>Accounts</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame" data-file="images/settings.png"><img src="images/settings.png" alt="Settings" loading="lazy" decoding="async" onerror="this.remove()"></div>
+          <figcaption>Settings</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy -->
+  <section>
+    <div class="wrap">
+      <div class="section-label">Privacy</div>
+      <h2>Your data never leaves your phone</h2>
+      <div class="privacy-box">
+        <p>MyLui has no accounts and no servers of its own. Every balance, account, and investment you enter is stored in private storage on your device.</p>
+        <p>The only third party is Google AdMob, which shows banner ads in the free tier. MyLui Premium removes ads entirely.</p>
+        <p><a href="policy.html">Read the full privacy policy</a></p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="cta-banner">
+      <h2>Start tracking your net worth today</h2>
+      <p>Free to download. Update your balances once a month. Know exactly where you stand — on both sides of the causeway.</p>
+      <a class="btn-primary" href="https://play.google.com/store/apps/details?id=com.cloudfullstack.mylui">Get it on Google Play</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 MyLui</span>
+    <span class="links">
+      <a href="policy.html">Privacy policy</a>
+      <a href="mailto:nnywwynn88@gmail.com">nnywwynn88@gmail.com</a>
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>
