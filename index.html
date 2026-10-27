@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <title>MyLui – Net Worth Tracker for SG & MY</title>
-<meta name="description" content="Track your net worth across Singapore and Malaysia. Multi-currency, investments, property, CPF, EPF — all in one place. No account needed.">
+<meta name="description" content="Track your net worth across Singapore and Malaysia. Multi-currency accounts, property, CPF, EPF and savings goals — all in one place. No account needed.">
 <meta property="og:title" content="MyLui – Net Worth Tracker for SG & MY">
-<meta property="og:description" content="Track your wealth across two countries. SGD, MYR, investments, property, CPF, EPF. Beautiful charts. Private by default.">
+<meta property="og:description" content="Track your wealth across two countries. SGD, MYR, property, CPF, EPF and financial goals. Beautiful charts. Private by default.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -245,6 +245,7 @@
     <nav aria-label="Main">
       <a href="#features">Features</a>
       <a href="#analytics">Analytics</a>
+      <a href="#plans">Free vs Premium</a>
       <a href="#screens">Screens</a>
       <a href="policy.html">Privacy</a>
       <a class="nav-cta" href="https://play.google.com/store/apps/details?id=com.cloudfullstack.mylui">Download</a>
@@ -261,7 +262,7 @@
           Singapore &amp; Malaysia
         </div>
         <h1>Your wealth,<br><em>both sides</em><br>of the causeway</h1>
-        <p class="hero-lede">MyLui tracks your net worth across SGD and MYR accounts — bank, CPF, EPF, investments, property — in one clear view. No account needed, nothing leaves your phone.</p>
+        <p class="hero-lede">MyLui tracks your net worth across SGD and MYR accounts — bank, CPF, EPF and property — in one clear view. No account needed, nothing leaves your phone.</p>
         <div class="hero-actions">
           <a class="btn-primary" href="https://play.google.com/store/apps/details?id=com.cloudfullstack.mylui">Get it on Google Play</a>
           <a class="btn-ghost" href="#features">See what it does</a>
@@ -370,13 +371,9 @@
           <p>Log purchase price, outstanding loan, and monthly rental. MyLui calculates your equity and rental yield automatically.</p>
         </div>
         <div class="feat-card">
-          <div class="feat-icon" style="background:rgba(52,211,153,.12)">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round">
-              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
-            </svg>
-          </div>
-          <h3>SGX and Bursa investments</h3>
-          <p>Add stock holdings from SGX or Bursa Malaysia. Live prices from Yahoo Finance. P&amp;L and unrealised gains calculated per holding.</p>
+          <div class="feat-icon" style="background:rgba(52,211,153,.12);font-size:1.4rem">◎</div>
+          <h3>Emergency fund planning</h3>
+          <p>Record your emergency savings and essential monthly expenses. See your progress toward a six-month safety buffer, with deeper coverage insights in Premium.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon" style="background:rgba(124,106,247,.12)">
@@ -384,8 +381,8 @@
               <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
             </svg>
           </div>
-          <h3>Financial goal tags</h3>
-          <p>Tag accounts as Retirement, Emergency Fund, Education, or House. See how much you have allocated toward each goal at a glance.</p>
+          <h3>Financial goals</h3>
+          <p>Create personal savings goals, record contributions and track your progress. Premium adds forecasts, planning tools and priority suggestions.</p>
         </div>
         <div class="feat-card">
           <div class="feat-icon" style="background:rgba(56,201,184,.12)">
@@ -510,12 +507,36 @@
     </div>
   </section>
 
+  <!-- Plans -->
+  <section id="plans">
+    <div class="wrap">
+      <div class="section-label">Free vs Premium</div>
+      <h2>Start free. Upgrade when you need more.</h2>
+      <p class="section-sub">MyLui keeps essential tracking available for free. Premium adds deeper insights and planning tools. Both monthly and annual subscriptions unlock the same features.</p>
+      <div class="feat-grid">
+        <div class="feat-card wide">
+          <div class="section-label">FREE</div>
+          <h3>Build your financial picture</h3>
+          <p>Track your net worth and balances, create and contribute to personal savings goals, and manually track your emergency fund against a six-month target. The free experience includes ads and account limits.</p>
+        </div>
+        <div class="feat-card wide" style="border-color:rgba(124,106,247,.55)">
+          <div class="section-label">MYLUI PREMIUM · MONTHLY OR ANNUAL</div>
+          <h3>See more. Plan smarter.</h3>
+          <p>Remove ads, unlock unlimited accounts and advanced Analytics, and use Goals Overview, Smart Savings Planner, goal completion forecasts, goal priorities and savings allocation suggestions, emergency fund coverage insights, and the Financial Health Dashboard.</p>
+          <p style="margin-top:1rem;color:var(--muted)">Choose monthly or annual billing in the app. Pricing and availability are shown before purchase in Google Play.</p>
+        </div>
+      </div>
+      <p class="section-sub" style="margin-top:1.5rem">Premium insights are estimates based on the information you enter; they are not investment advice or guaranteed outcomes.</p>
+      <a class="btn-primary" href="https://play.google.com/store/apps/details?id=com.cloudfullstack.mylui">Explore MyLui on Google Play</a>
+    </div>
+  </section>
+
   <!-- Screens -->
   <section id="screens">
     <div class="wrap">
       <div class="section-label">Screens</div>
       <h2>A few screens from the app</h2>
-      <p class="section-sub">Add your screenshots to the images/ folder and they will appear here automatically.</p>
+      <p class="section-sub">A preview of the MyLui experience.</p>
       <div class="shots">
         <figure class="shot">
           <div class="frame" data-file="images/home.png"><img src="images/home.png" alt="MyLui home screen" loading="lazy" decoding="async" onerror="this.remove()"></div>
@@ -525,11 +546,7 @@
           <div class="frame" data-file="images/analytics.png"><img src="images/analytics.png" alt="Analytics" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <figcaption>Analytics</figcaption>
         </figure>
-        <figure class="shot">
-          <div class="frame" data-file="images/investments.png"><img src="images/investments.png" alt="Investments" loading="lazy" decoding="async" onerror="this.remove()"></div>
-          <figcaption>Investments</figcaption>
-        </figure>
-        <figure class="shot">
+<figure class="shot">
           <div class="frame" data-file="images/accounts.png"><img src="images/accounts.png" alt="Accounts" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <figcaption>Accounts</figcaption>
         </figure>
@@ -547,7 +564,7 @@
       <div class="section-label">Privacy</div>
       <h2>Your data never leaves your phone</h2>
       <div class="privacy-box">
-        <p>MyLui has no accounts and no servers of its own. Every balance, account, and investment you enter is stored in private storage on your device.</p>
+        <p>MyLui has no accounts and no servers of its own. Every balance and account you enter is stored in private storage on your device.</p>
         <p>The only third party is Google AdMob, which shows banner ads in the free tier. MyLui Premium removes ads entirely.</p>
         <p><a href="policy.html">Read the full privacy policy</a></p>
       </div>
