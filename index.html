@@ -185,18 +185,46 @@
   .goal-fill { height: 100%; border-radius: 3px; }
 
   /* ── Screens ── */
-  .shots { display: flex; gap: 1.25rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
-  .shot { margin: 0; flex: 0 0 min(55vw, 195px); scroll-snap-align: start; }
+  .shots {
+    display: flex; gap: 1.25rem; overflow-x: auto; overflow-y: hidden;
+    padding: .25rem .15rem 1.5rem; scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch; align-items: flex-start;
+  }
+  .shot { margin: 0; flex: 0 0 clamp(160px, 55vw, 195px); min-width: 0; scroll-snap-align: start; }
   .frame {
-    position: relative; aspect-ratio: 9/19.5;
+    position: relative; width: 100%; aspect-ratio: 9/19.5;
     border: 1px solid var(--border); border-radius: 22px;
     overflow: hidden; background: var(--surface);
     display: flex; align-items: center; justify-content: center;
-    color: var(--muted); font-size: .78rem; text-align: center; padding: 1rem;
+    color: var(--muted); font-size: .78rem; text-align: center;
+    padding: 1rem; isolation: isolate;
   }
-  .frame::before { content: attr(data-file); }
-  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .shot figcaption { margin-top: .55rem; font-size: .82rem; color: var(--muted); text-align: center; }
+  .frame::before {
+    content: attr(data-file); display: block; overflow-wrap: anywhere;
+    max-width: 100%; padding: 0 .25rem;
+  }
+  .frame:has(img)::before { display: none; }
+  .frame img {
+    position: absolute; inset: 0; display: block;
+    width: 100%; height: 100%; object-fit: contain;
+  }
+  .shot figcaption {
+    margin-top: .65rem; font-size: .82rem; color: var(--muted);
+    text-align: center; line-height: 1.4; min-height: 2.8em;
+    overflow-wrap: anywhere;
+  }
+
+  .shots-scrollbar { scrollbar-width: thin; scrollbar-color: var(--purple) var(--surface); }
+  .shots-scrollbar::-webkit-scrollbar { height: 9px; }
+  .shots-scrollbar::-webkit-scrollbar-track { background: var(--surface); border-radius: 12px; }
+  .shots-scrollbar::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 12px; }
+  .shots-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: .75rem 0 1rem; }
+  .shots-hint { color: var(--muted); font-size: .88rem; margin: 0; }
+  .shots-arrows { display: flex; gap: .5rem; }
+  .shots-arrow { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 1.2rem; }
+  .shots-arrow:hover:not(:disabled) { border-color: var(--purple); background: rgba(124,106,247,.18); }
+  .shots-arrow:disabled { opacity: .3; cursor: default; }
+  .shots-arrow:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
 
   /* ── Privacy box ── */
   .privacy-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; max-width: 44em; }
@@ -596,7 +624,14 @@
       <div class="section-label">Screens</div>
       <h2>A few screens from the app</h2>
       <p class="section-sub">A preview of the MyLui experience.</p>
-      <div class="shots">
+      <div class="shots-controls">
+        <p class="shots-hint">Swipe or scroll sideways to explore more screenshots →</p>
+        <div class="shots-arrows">
+          <button class="shots-arrow" type="button" id="shots-prev" aria-label="Previous screenshots">←</button>
+          <button class="shots-arrow" type="button" id="shots-next" aria-label="Next screenshots">→</button>
+        </div>
+      </div>
+      <div class="shots shots-scrollbar" id="shots-carousel" tabindex="0" role="region" aria-label="MyLui app screenshots">
         <figure class="shot">
           <div class="frame" data-file="images/home.png"><img src="images/home.png" alt="MyLui home screen" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <figcaption>Home</figcaption>
@@ -604,6 +639,12 @@
         <figure class="shot">
           <div class="frame" data-file="images/analytics.png"><img src="images/analytics.png" alt="Analytics" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <figcaption>Analytics</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame" data-file="images/analytics_2.png">
+            <img src="images/analytics_2.png" alt="MyLui Analytics net worth heatmap" loading="lazy" decoding="async" onerror="this.remove()">
+          </div>
+          <figcaption>Analytics · Heatmap</figcaption>
         </figure>
 <figure class="shot">
           <div class="frame" data-file="images/accounts.png"><img src="images/accounts.png" alt="Accounts" loading="lazy" decoding="async" onerror="this.remove()"></div>
@@ -661,5 +702,28 @@
   </div>
 </footer>
 
+<script>
+  (() => {
+    const carousel = document.getElementById('shots-carousel');
+    const previous = document.getElementById('shots-prev');
+    const next = document.getElementById('shots-next');
+    if (!carousel || !previous || !next) return;
+    const updateButtons = () => {
+      previous.disabled = carousel.scrollLeft <= 2;
+      next.disabled = carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 2;
+    };
+    const scrollCards = (direction) => {
+      const card = carousel.querySelector('.shot');
+      const distance = card ? card.getBoundingClientRect().width + 20 : 220;
+      carousel.scrollBy({ left: direction * distance, behavior: 'smooth' });
+    };
+    previous.addEventListener('click', () => scrollCards(-1));
+    next.addEventListener('click', () => scrollCards(1));
+    carousel.addEventListener('scroll', updateButtons, { passive: true });
+    window.addEventListener('resize', updateButtons);
+    window.addEventListener('load', updateButtons);
+    updateButtons();
+  })();
+</script>
 </body>
 </html>
