@@ -185,18 +185,34 @@
   .goal-fill { height: 100%; border-radius: 3px; }
 
   /* ── Screens ── */
-  .shots { display: flex; gap: 1.25rem; overflow-x: auto; padding-bottom: 1rem; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
-  .shot { margin: 0; flex: 0 0 min(55vw, 195px); scroll-snap-align: start; }
+  .shots {
+    display: flex; gap: 1.25rem; overflow-x: auto; overflow-y: hidden;
+    padding: .25rem .15rem 1.5rem; scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch; align-items: flex-start;
+  }
+  .shot { margin: 0; flex: 0 0 clamp(160px, 55vw, 195px); min-width: 0; scroll-snap-align: start; }
   .frame {
-    position: relative; aspect-ratio: 9/19.5;
+    position: relative; width: 100%; aspect-ratio: 9/19.5;
     border: 1px solid var(--border); border-radius: 22px;
     overflow: hidden; background: var(--surface);
     display: flex; align-items: center; justify-content: center;
-    color: var(--muted); font-size: .78rem; text-align: center; padding: 1rem;
+    color: var(--muted); font-size: .78rem; text-align: center;
+    padding: 1rem; isolation: isolate;
   }
-  .frame::before { content: attr(data-file); }
-  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .shot figcaption { margin-top: .55rem; font-size: .82rem; color: var(--muted); text-align: center; }
+  .frame::before {
+    content: attr(data-file); display: block; overflow-wrap: anywhere;
+    max-width: 100%; padding: 0 .25rem;
+  }
+  .frame:has(img)::before { display: none; }
+  .frame img {
+    position: absolute; inset: 0; display: block;
+    width: 100%; height: 100%; object-fit: contain;
+  }
+  .shot figcaption {
+    margin-top: .65rem; font-size: .82rem; color: var(--muted);
+    text-align: center; line-height: 1.4; min-height: 2.8em;
+    overflow-wrap: anywhere;
+  }
 
   /* ── Privacy box ── */
   .privacy-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; max-width: 44em; }
@@ -604,6 +620,12 @@
         <figure class="shot">
           <div class="frame" data-file="images/analytics.png"><img src="images/analytics.png" alt="Analytics" loading="lazy" decoding="async" onerror="this.remove()"></div>
           <figcaption>Analytics</figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="frame" data-file="images/analytics_2.png">
+            <img src="images/analytics_2.png" alt="MyLui Analytics net worth heatmap" loading="lazy" decoding="async" onerror="this.remove()">
+          </div>
+          <figcaption>Analytics · Heatmap</figcaption>
         </figure>
 <figure class="shot">
           <div class="frame" data-file="images/accounts.png"><img src="images/accounts.png" alt="Accounts" loading="lazy" decoding="async" onerror="this.remove()"></div>
